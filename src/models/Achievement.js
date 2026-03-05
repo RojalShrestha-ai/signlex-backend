@@ -1,12 +1,3 @@
-/**
- * SignLex Backend - Achievement Model
- * Author: Amin Memon
- *
- * Stores unlocked achievements/badges per user.
- * Achievement definitions and unlock criteria are in
- * the gamification service layer.
- */
-
 const mongoose = require("mongoose");
 
 const achievementSchema = new mongoose.Schema(
@@ -54,7 +45,5 @@ const achievementSchema = new mongoose.Schema(
   }
 );
 
-// Prevent duplicate badges for same user
 achievementSchema.index({ userId: 1, badgeId: 1 }, { unique: true });
-
 module.exports = mongoose.model("Achievement", achievementSchema);

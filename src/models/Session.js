@@ -1,11 +1,3 @@
-/**
- * SignLex Backend - Session Model
- * Author: Amin Memon
- *
- * Records individual practice/test sessions for history
- * tracking and analytics.
- */
-
 const mongoose = require("mongoose");
 
 const sessionSchema = new mongoose.Schema(
@@ -59,7 +51,6 @@ const sessionSchema = new mongoose.Schema(
   }
 );
 
-// Index for fetching user's recent sessions
 sessionSchema.index({ userId: 1, createdAt: -1 });
 
 module.exports = mongoose.model("Session", sessionSchema);

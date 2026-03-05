@@ -1,20 +1,8 @@
-/**
- * SignLex Backend - Gamification Controller
- * Author: Amin Memon
- *
- * Handles XP awarding, streak management, and achievement tracking.
- * Based on Octalysis gamification framework principles.
- *
- * Status: ~10% - awardXP and getStreak have basic logic,
- *   achievements and streak freeze are stubs.
- */
-
 const User = require("../models/User");
 const Achievement = require("../models/Achievement");
 const Leaderboard = require("../models/Leaderboard");
 const { calculateLevel, xpForLevel } = require("../utils/xpCalculator");
 
-// Badge definitions (Octalysis framework)
 const BADGE_DEFINITIONS = [
   { badgeId: "first_sign", badgeName: "First Sign", category: "milestone", tier: "bronze", xp: 50, criteria: "Learn your first sign" },
   { badgeId: "streak_3", badgeName: "3-Day Streak", category: "streak", tier: "bronze", xp: 100, criteria: "Maintain a 3-day practice streak" },
@@ -28,10 +16,6 @@ const BADGE_DEFINITIONS = [
   { badgeId: "test_5", badgeName: "Test Taker", category: "practice", tier: "silver", xp: 200, criteria: "Complete 5 mock tests" },
 ];
 
-/**
- * POST /api/gamification/xp
- * Award XP to the authenticated user and update level.
- */
 const awardXP = async (req, res) => {
   try {
     const user = await User.findOne({ firebaseUid: req.user.uid });
@@ -78,10 +62,7 @@ const awardXP = async (req, res) => {
   }
 };
 
-/**
- * GET /api/gamification/streak
- * Get current streak information.
- */
+
 const getStreak = async (req, res) => {
   try {
     const user = await User.findOne({ firebaseUid: req.user.uid });
@@ -117,10 +98,6 @@ const getStreak = async (req, res) => {
   }
 };
 
-/**
- * POST /api/gamification/streak/checkin
- * Record daily check-in, update streak.
- */
 const dailyCheckin = async (req, res) => {
   try {
     const user = await User.findOne({ firebaseUid: req.user.uid });
@@ -201,10 +178,7 @@ const useStreakFreeze = async (req, res) => {
   }
 };
 
-/**
- * GET /api/gamification/achievements
- * Get all achievements unlocked by the user.
- */
+
 const getAchievements = async (req, res) => {
   try {
     const user = await User.findOne({ firebaseUid: req.user.uid });
@@ -224,10 +198,7 @@ const getAchievements = async (req, res) => {
   }
 };
 
-/**
- * GET /api/gamification/achievements/available
- * Get all possible badges with user's unlock status.
- */
+
 const getAvailableBadges = async (req, res) => {
   try {
     const user = await User.findOne({ firebaseUid: req.user.uid });
@@ -249,10 +220,7 @@ const getAvailableBadges = async (req, res) => {
   }
 };
 
-/**
- * GET /api/gamification/level
- * Get current level, XP, and progress to next level.
- */
+
 const getLevelInfo = async (req, res) => {
   try {
     const user = await User.findOne({ firebaseUid: req.user.uid });

@@ -1,11 +1,3 @@
-/**
- * SignLex Backend - Leaderboard Model
- * Author: Amin Memon
- *
- * Stores weekly/all-time leaderboard snapshots.
- * Updated whenever user XP changes via the gamification controller.
- */
-
 const mongoose = require("mongoose");
 
 const leaderboardSchema = new mongoose.Schema(
@@ -53,7 +45,6 @@ const leaderboardSchema = new mongoose.Schema(
   }
 );
 
-// Indexes for ranking queries
 leaderboardSchema.index({ totalXP: -1 });
 leaderboardSchema.index({ weeklyXP: -1 });
 leaderboardSchema.index({ monthlyXP: -1 });

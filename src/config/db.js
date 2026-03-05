@@ -1,11 +1,3 @@
-/**
- * SignLex Backend - MongoDB Connection
- * Author: Amin Memon
- *
- * Establishes and manages the MongoDB connection using Mongoose.
- * Includes retry logic and connection event handlers.
- */
-
 const mongoose = require("mongoose");
 
 const connectDB = async () => {

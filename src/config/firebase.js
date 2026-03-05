@@ -1,13 +1,3 @@
-/**
- * SignLex Backend - Firebase Admin SDK Configuration
- * Author: Amin Memon
- *
- * Initializes Firebase Admin for server-side token verification.
- * Uses service account credentials from environment variables.
- *
- * Status: ~15% - Config ready, used by authMiddleware
- */
-
 const admin = require("firebase-admin");
 
 let firebaseApp;

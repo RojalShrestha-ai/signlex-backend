@@ -1,22 +1,8 @@
-/**
- * SignLex Backend - Leaderboard Controller
- * Author: Amin Memon
- *
- * Handles leaderboard ranking queries: global (all-time),
- * weekly, monthly, and individual rank lookup.
- *
- * Status: ~10% - Basic queries defined, aggregation pipelines TODO
- */
-
 const Leaderboard = require("../models/Leaderboard");
 const User = require("../models/User");
 
 const DEFAULT_LIMIT = 20;
 
-/**
- * GET /api/leaderboard/global
- * All-time top rankings by total XP.
- */
 const getGlobalRankings = async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || DEFAULT_LIMIT;
@@ -41,10 +27,6 @@ const getGlobalRankings = async (req, res) => {
   }
 };
 
-/**
- * GET /api/leaderboard/weekly
- * This week's rankings by weekly XP.
- */
 const getWeeklyRankings = async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || DEFAULT_LIMIT;
@@ -69,10 +51,6 @@ const getWeeklyRankings = async (req, res) => {
   }
 };
 
-/**
- * GET /api/leaderboard/monthly
- * This month's rankings by monthly XP.
- */
 const getMonthlyRankings = async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || DEFAULT_LIMIT;
@@ -97,10 +75,6 @@ const getMonthlyRankings = async (req, res) => {
   }
 };
 
-/**
- * GET /api/leaderboard/me
- * Get the authenticated user's rank.
- */
 const getMyRank = async (req, res) => {
   try {
     const user = await User.findOne({ firebaseUid: req.user.uid });

@@ -1,12 +1,3 @@
-/**
- * SignLex Backend - Progress Model
- * Author: Amin Memon
- *
- * Tracks per-sign learning progress for each user.
- * Includes accuracy history, attempt counts, and
- * spaced repetition scheduling data.
- */
-
 const mongoose = require("mongoose");
 
 const progressSchema = new mongoose.Schema(
@@ -67,11 +58,7 @@ const progressSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-
-// Compound index: one progress record per user per sign
 progressSchema.index({ userId: 1, sign: 1 }, { unique: true });
-
-// Index for finding signs due for review
 progressSchema.index({ userId: 1, "sr.nextReviewDate": 1 });
 
 module.exports = mongoose.model("Progress", progressSchema);

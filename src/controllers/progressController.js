@@ -1,23 +1,8 @@
-/**
- * SignLex Backend - Progress Controller
- * Author: Amin Memon
- *
- * Handles recording practice attempts, retrieving progress,
- * and managing spaced repetition review scheduling.
- *
- * Status: ~15% - recordAttempt and getOverview implemented,
- *   session recording and SR integration are shells.
- */
-
 const User = require("../models/User");
 const Progress = require("../models/Progress");
 const Session = require("../models/Session");
 const { calculateNextReview } = require("../services/spacedRepetition");
 
-/**
- * POST /api/progress/record
- * Record a single practice attempt for a sign.
- */
 const recordAttempt = async (req, res) => {
   try {
     const user = await User.findOne({ firebaseUid: req.user.uid });
@@ -99,10 +84,7 @@ const recordAttempt = async (req, res) => {
   }
 };
 
-/**
- * GET /api/progress/overview
- * Get overall progress summary for the user.
- */
+
 const getOverview = async (req, res) => {
   try {
     const user = await User.findOne({ firebaseUid: req.user.uid });
@@ -140,10 +122,7 @@ const getOverview = async (req, res) => {
   }
 };
 
-/**
- * GET /api/progress/sign/:sign
- * Get detailed progress for a specific sign.
- */
+
 const getSignProgress = async (req, res) => {
   try {
     const user = await User.findOne({ firebaseUid: req.user.uid });
@@ -171,10 +150,6 @@ const getSignProgress = async (req, res) => {
   }
 };
 
-/**
- * GET /api/progress/due-reviews
- * Get signs due for spaced repetition review.
- */
 const getDueReviews = async (req, res) => {
   try {
     const user = await User.findOne({ firebaseUid: req.user.uid });
@@ -200,10 +175,6 @@ const getDueReviews = async (req, res) => {
   }
 };
 
-/**
- * POST /api/progress/session
- * Record a complete practice session.
- */
 const recordSession = async (req, res) => {
   try {
     const user = await User.findOne({ firebaseUid: req.user.uid });
@@ -233,7 +204,6 @@ const recordSession = async (req, res) => {
       xpEarned,
     });
 
-    // Update user total practice time
     user.stats.totalPracticeTime += Math.ceil((duration || 0) / 60);
     await user.save();
 
@@ -254,10 +224,6 @@ const recordSession = async (req, res) => {
   }
 };
 
-/**
- * GET /api/progress/sessions
- * Get user's session history (paginated).
- */
 const getSessionHistory = async (req, res) => {
   try {
     const user = await User.findOne({ firebaseUid: req.user.uid });

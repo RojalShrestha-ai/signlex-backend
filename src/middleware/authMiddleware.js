@@ -1,20 +1,5 @@
-/**
- * SignLex Backend - Authentication Middleware
- * Author: Amin Memon
- *
- * Verifies Firebase ID tokens from the Authorization header.
- * Attaches decoded user info to req.user for downstream handlers.
- *
- * Status: ~15% - Token verification implemented,
- *   optional auth and role-based access TODO for full implementation.
- */
-
 const { getAuth } = require("../config/firebase");
 
-/**
- * Require valid Firebase token.
- * Expects header: Authorization: Bearer <idToken>
- */
 const requireAuth = async (req, res, next) => {
   const authHeader = req.headers.authorization;
 
@@ -39,10 +24,6 @@ const requireAuth = async (req, res, next) => {
   }
 };
 
-/**
- * Optional auth - attaches user if token present, continues regardless.
- * Useful for public endpoints that show extra data for logged-in users.
- */
 const optionalAuth = async (req, res, next) => {
   const authHeader = req.headers.authorization;
 

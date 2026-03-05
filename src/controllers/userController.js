@@ -1,20 +1,6 @@
-/**
- * SignLex Backend - User Controller
- * Author: Amin Memon
- *
- * Handles user registration, profile retrieval, and updates.
- * Creates MongoDB user record linked to Firebase UID.
- *
- * Status: ~15% - Register and getProfile implemented,
- *   update and stats are basic shells.
- */
-
 const User = require("../models/User");
 
-/**
- * POST /api/users/register
- * Create or return existing user after Firebase signup.
- */
+
 const registerUser = async (req, res) => {
   try {
     const { uid, email, name, picture } = req.user;
@@ -54,10 +40,6 @@ const registerUser = async (req, res) => {
   }
 };
 
-/**
- * GET /api/users/me
- * Get the authenticated user's full profile.
- */
 const getMyProfile = async (req, res) => {
   try {
     const user = await User.findOne({ firebaseUid: req.user.uid });
@@ -73,10 +55,6 @@ const getMyProfile = async (req, res) => {
   }
 };
 
-/**
- * PUT /api/users/me
- * Update the authenticated user's profile.
- */
 const updateMyProfile = async (req, res) => {
   try {
     const allowedUpdates = ["displayName", "photoURL", "preferences"];
@@ -105,10 +83,6 @@ const updateMyProfile = async (req, res) => {
   }
 };
 
-/**
- * GET /api/users/me/stats
- * Get current user's stats summary.
- */
 const getMyStats = async (req, res) => {
   try {
     const user = await User.findOne(
@@ -130,10 +104,7 @@ const getMyStats = async (req, res) => {
   }
 };
 
-/**
- * GET /api/users/:id/public
- * Get a user's public-facing profile (limited fields).
- */
+
 const getPublicProfile = async (req, res) => {
   try {
     const user = await User.findById(req.params.id).select(
@@ -151,9 +122,7 @@ const getPublicProfile = async (req, res) => {
   }
 };
 
-/**
- * Strip sensitive fields from user object before sending to client.
- */
+
 function sanitizeUser(user) {
   const obj = user.toObject();
   delete obj.__v;
