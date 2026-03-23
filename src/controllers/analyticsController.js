@@ -1,21 +1,8 @@
-/**
- * SignLex Backend - Analytics Controller
- * Author: Amin Memon
- *
- * MongoDB aggregation queries for weekly progress summaries,
- * learning trends, and per-user analytics dashboards.
- */
-
 const mongoose = require("mongoose");
 const User = require("../models/User");
 const Session = require("../models/Session");
 const Progress = require("../models/Progress");
 
-/**
- * GET /api/analytics/weekly-summary
- * Aggregates all user sessions from the past 7 days, groups by day,
- * and computes: total signs reviewed, average accuracy, XP earned per day.
- */
 const getWeeklySummary = async (req, res) => {
   try {
     const user = await User.findOne({ firebaseUid: req.user.uid });

@@ -1,12 +1,3 @@
-/**
- * SignLex Backend - Flashcard Controller
- * Author: Amin Memon
- *
- * SM-2 spaced repetition flashcard system endpoints.
- * Handles fetching due cards, submitting reviews, and
- * managing the per-user review schedule.
- */
-
 const User = require("../models/User");
 const Progress = require("../models/Progress");
 const {

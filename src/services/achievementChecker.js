@@ -1,12 +1,3 @@
-/**
- * SignLex Backend - Achievement Checker Service
- * Author: Amin Memon
- *
- * Evaluates badge unlock conditions after user actions.
- * Called by controllers after XP awards, streak updates,
- * session completions, and sign mastery events.
- */
-
 const Achievement = require("../models/Achievement");
 const User = require("../models/User");
 const Progress = require("../models/Progress");
