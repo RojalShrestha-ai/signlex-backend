@@ -19,6 +19,11 @@ const userRoutes = require("./routes/userRoutes");
 const progressRoutes = require("./routes/progressRoutes");
 const gamificationRoutes = require("./routes/gamificationRoutes");
 const leaderboardRoutes = require("./routes/leaderboardRoutes");
+const flashcardRoutes = require("./routes/flashcardRoutes");
+const analyticsRoutes = require("./routes/analyticsRoutes");
+
+// Scheduled jobs
+const { initScheduler } = require("./jobs/scheduler");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -63,6 +68,8 @@ app.use("/api/users", userRoutes);
 app.use("/api/progress", progressRoutes);
 app.use("/api/gamification", gamificationRoutes);
 app.use("/api/leaderboard", leaderboardRoutes);
+app.use("/api/flashcards", flashcardRoutes);
+app.use("/api/analytics", analyticsRoutes);
 
 // ── 404 Handler ──
 app.use((req, res) => {
@@ -84,6 +91,7 @@ app.use((err, req, res, next) => {
 async function startServer() {
   try {
     await connectDB();
+    initScheduler(); // Start scheduled jobs (leaderboard resets, streak checks)
     app.listen(PORT, () => {
       console.log(`SignLex API server running on port ${PORT}`);
       console.log(`Environment: ${process.env.NODE_ENV || "development"}`);

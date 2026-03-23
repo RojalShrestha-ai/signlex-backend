@@ -2,6 +2,7 @@ const User = require("../models/User");
 const Achievement = require("../models/Achievement");
 const Leaderboard = require("../models/Leaderboard");
 const { calculateLevel, xpForLevel } = require("../utils/xpCalculator");
+const { checkAndUnlockAchievements } = require("../services/achievementChecker");
 
 const BADGE_DEFINITIONS = [
   { badgeId: "first_sign", badgeName: "First Sign", category: "milestone", tier: "bronze", xp: 50, criteria: "Learn your first sign" },
@@ -48,6 +49,9 @@ const awardXP = async (req, res) => {
       { upsert: true }
     );
 
+    // Check for newly earned achievements
+    const newBadges = await checkAndUnlockAchievements(user._id);
+
     res.json({
       xpAwarded: amount,
       reason: reason || "practice",
@@ -55,6 +59,7 @@ const awardXP = async (req, res) => {
       level: user.stats.currentLevel,
       leveledUp,
       nextLevelXP: xpForLevel(user.stats.currentLevel + 1),
+      newAchievements: newBadges,
     });
   } catch (err) {
     console.error("Award XP error:", err.message);
@@ -138,10 +143,14 @@ const dailyCheckin = async (req, res) => {
 
     await user.save();
 
+    // Check streak-related achievements
+    const newBadges = await checkAndUnlockAchievements(user._id);
+
     res.json({
       message: "Check-in recorded",
       currentStreak: user.stats.currentStreak,
       longestStreak: user.stats.longestStreak,
+      newAchievements: newBadges,
     });
   } catch (err) {
     console.error("Daily checkin error:", err.message);
