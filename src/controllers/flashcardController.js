@@ -10,7 +10,7 @@ const ASL_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
 const getDueCards = async (req, res) => {
   try {
-    const user = await User.findOne({ firebaseUid: req.user.uid });
+    const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ error: "User not found" });
 
     const limit = parseInt(req.query.limit) || 20;
@@ -45,7 +45,7 @@ const getDueCards = async (req, res) => {
 
 const submitReview = async (req, res) => {
   try {
-    const user = await User.findOne({ firebaseUid: req.user.uid });
+    const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ error: "User not found" });
 
     const { sign, rating, correct } = req.body;
@@ -131,7 +131,7 @@ const submitReview = async (req, res) => {
 
 const getNewCards = async (req, res) => {
   try {
-    const user = await User.findOne({ firebaseUid: req.user.uid });
+    const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ error: "User not found" });
 
     const limit = parseInt(req.query.limit) || 5;
@@ -153,7 +153,7 @@ const getNewCards = async (req, res) => {
 
 const getFlashcardStats = async (req, res) => {
   try {
-    const user = await User.findOne({ firebaseUid: req.user.uid });
+    const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ error: "User not found" });
 
     const allProgress = await Progress.find({ userId: user._id }).lean();

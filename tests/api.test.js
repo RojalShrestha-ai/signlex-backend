@@ -1,10 +1,8 @@
 const mockUser = {
   _id: "65a1b2c3d4e5f67890abcdef",
-  firebaseUid: "test-firebase-uid-123",
   email: "amin@signlex.dev",
   displayName: "Amin Memon",
   photoURL: null,
-  authProvider: "email",
   role: "user",
   preferences: { dailyGoalMinutes: 15, notificationsEnabled: true, difficultyLevel: "beginner" },
   stats: {
@@ -104,16 +102,13 @@ jest.mock("../src/models/Leaderboard", () => {
 });
 
 
-jest.mock("../src/config/firebase", () => ({
-  initializeFirebase: jest.fn(),
-  getAuth: jest.fn(() => ({
-    verifyIdToken: jest.fn().mockResolvedValue({
-      uid: "test-firebase-uid-123",
-      email: "amin@signlex.dev",
-      name: "Amin Memon",
-      picture: null,
-    }),
+// Mock jsonwebtoken to bypass auth in tests
+jest.mock("jsonwebtoken", () => ({
+  verify: jest.fn(() => ({
+    id: "65a1b2c3d4e5f67890abcdef",
+    email: "amin@signlex.dev",
   })),
+  sign: jest.fn(() => "mock-jwt-token"),
 }));
 
 jest.mock("../src/config/db", () => jest.fn().mockResolvedValue(true));
@@ -238,7 +233,7 @@ describe("User Routes", () => {
   });
 
   test("GET /api/users/me/stats returns stats", async () => {
-    User.findOne.mockResolvedValue({ stats: mockUser.stats, streakFreezeCount: 2 });
+    User.findById.mockResolvedValue({ stats: mockUser.stats, streakFreezeCount: 2 });
     const res = await request(app).get("/api/users/me/stats").set(AUTH_HEADER);
     expect(res.status).toBe(200);
     expect(res.body.stats).toBeDefined();
@@ -369,7 +364,7 @@ describe("Analytics Routes", () => {
 
 describe("User not found handling", () => {
   test("returns 404 when user doesn't exist", async () => {
-    User.findOne.mockResolvedValue(null);
+    User.findById.mockResolvedValue(null);
     const res = await request(app).get("/api/users/me").set(AUTH_HEADER);
     expect(res.status).toBe(404);
     expect(res.body.error).toMatch(/not found/i);

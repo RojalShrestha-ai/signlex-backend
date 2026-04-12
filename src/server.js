@@ -43,7 +43,7 @@ const limiter = rateLimit({
   max: 100,
   message: { error: "Too many requests, please try again later." },
 });
-app.use("/api/", limiter);
+app.use("/api/v1/", limiter);
 
 // ── Body Parsing ──
 app.use(express.json({ limit: "10mb" }));
@@ -55,7 +55,7 @@ if (process.env.NODE_ENV !== "test") {
 }
 
 // ── Health Check ──
-app.get("/api/health", (req, res) => {
+app.get("/api/v1/health", (req, res) => {
   res.json({
     status: "ok",
     service: "signlex-backend",
@@ -64,12 +64,12 @@ app.get("/api/health", (req, res) => {
 });
 
 // ── Mount Routes ──
-app.use("/api/users", userRoutes);
-app.use("/api/progress", progressRoutes);
-app.use("/api/gamification", gamificationRoutes);
-app.use("/api/leaderboard", leaderboardRoutes);
-app.use("/api/flashcards", flashcardRoutes);
-app.use("/api/analytics", analyticsRoutes);
+app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/progress", progressRoutes);
+app.use("/api/v1/gamification", gamificationRoutes);
+app.use("/api/v1/leaderboard", leaderboardRoutes);
+app.use("/api/v1/flashcards", flashcardRoutes);
+app.use("/api/v1/analytics", analyticsRoutes);
 
 // ── 404 Handler ──
 app.use((req, res) => {

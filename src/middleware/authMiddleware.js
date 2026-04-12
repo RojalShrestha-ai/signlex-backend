@@ -1,4 +1,4 @@
-const { getAuth } = require("../config/firebase");
+const jwt = require("jsonwebtoken");
 
 const requireAuth = async (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -10,16 +10,13 @@ const requireAuth = async (req, res, next) => {
   const token = authHeader.split("Bearer ")[1];
 
   try {
-    const decodedToken = await getAuth().verifyIdToken(token);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = {
-      uid: decodedToken.uid,
-      email: decodedToken.email,
-      name: decodedToken.name || null,
-      picture: decodedToken.picture || null,
+      id: decoded.id,
+      email: decoded.email,
     };
     next();
   } catch (err) {
-    console.error("Token verification failed:", err.message);
     return res.status(401).json({ error: "Invalid or expired token" });
   }
 };
@@ -34,11 +31,10 @@ const optionalAuth = async (req, res, next) => {
 
   try {
     const token = authHeader.split("Bearer ")[1];
-    const decodedToken = await getAuth().verifyIdToken(token);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = {
-      uid: decodedToken.uid,
-      email: decodedToken.email,
-      name: decodedToken.name || null,
+      id: decoded.id,
+      email: decoded.email,
     };
   } catch {
     req.user = null;

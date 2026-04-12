@@ -5,7 +5,7 @@ const { calculateNextReview } = require("../services/spacedRepetition");
 
 const recordAttempt = async (req, res) => {
   try {
-    const user = await User.findOne({ firebaseUid: req.user.uid });
+    const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ error: "User not found" });
 
     const { sign, correct, accuracy } = req.body;
@@ -82,7 +82,7 @@ const recordAttempt = async (req, res) => {
 
 const getOverview = async (req, res) => {
   try {
-    const user = await User.findOne({ firebaseUid: req.user.uid });
+    const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ error: "User not found" });
 
     const allProgress = await Progress.find({ userId: user._id });
@@ -120,7 +120,7 @@ const getOverview = async (req, res) => {
 
 const getSignProgress = async (req, res) => {
   try {
-    const user = await User.findOne({ firebaseUid: req.user.uid });
+    const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ error: "User not found" });
 
     const progress = await Progress.findOne({
@@ -147,7 +147,7 @@ const getSignProgress = async (req, res) => {
 
 const getDueReviews = async (req, res) => {
   try {
-    const user = await User.findOne({ firebaseUid: req.user.uid });
+    const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ error: "User not found" });
 
     const dueReviews = await Progress.find({
@@ -172,7 +172,7 @@ const getDueReviews = async (req, res) => {
 
 const recordSession = async (req, res) => {
   try {
-    const user = await User.findOne({ firebaseUid: req.user.uid });
+    const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ error: "User not found" });
 
     const { sessionType, duration, signsAttempted } = req.body;
@@ -221,7 +221,7 @@ const recordSession = async (req, res) => {
 
 const getSessionHistory = async (req, res) => {
   try {
-    const user = await User.findOne({ firebaseUid: req.user.uid });
+    const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ error: "User not found" });
 
     const page = parseInt(req.query.page) || 1;
