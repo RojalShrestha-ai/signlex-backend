@@ -1,82 +1,47 @@
-const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
-const generateToken = (user) => {
-  return jwt.sign(
-    { id: user._id, email: user.email },
-    process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_EXPIRES_IN || "7d" }
-  );
-};
 
 const registerUser = async (req, res) => {
   try {
-    const { email, password, displayName } = req.body;
+    const { uid, email, name, picture } = req.user;
+    const { displayName, authProvider } = req.body;
 
-    if (!email || !password || !displayName) {
-      return res.status(400).json({ error: "Email, password, and displayName are required" });
+    // Check if user already exists
+    let user = await User.findOne({ firebaseUid: uid });
+
+    if (user) {
+      return res.status(200).json({
+        message: "User already exists",
+        user: sanitizeUser(user),
+      });
     }
 
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(409).json({ error: "User already exists" });
-    }
-
-    const user = await User.create({
-      email,
-      password,
-      displayName,
+    user = await User.create({
+      firebaseUid: uid,
+      email: email,
+      displayName: displayName || name || "Learner",
+      photoURL: picture || null,
+      authProvider: authProvider || "email",
     });
-
-    const token = generateToken(user);
 
     console.log(`New user registered: ${user.email}`);
 
     res.status(201).json({
       message: "User registered successfully",
-      token,
       user: sanitizeUser(user),
     });
   } catch (err) {
+    if (err.code === 11000) {
+      return res.status(409).json({ error: "User already exists" });
+    }
     console.error("Registration error:", err.message);
     res.status(500).json({ error: "Failed to register user" });
   }
 };
 
-const loginUser = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    if (!email || !password) {
-      return res.status(400).json({ error: "Email and password are required" });
-    }
-
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(401).json({ error: "Invalid email or password" });
-    }
-
-    const isMatch = await user.comparePassword(password);
-    if (!isMatch) {
-      return res.status(401).json({ error: "Invalid email or password" });
-    }
-
-    const token = generateToken(user);
-
-    res.json({
-      message: "Login successful",
-      token,
-      user: sanitizeUser(user),
-    });
-  } catch (err) {
-    console.error("Login error:", err.message);
-    res.status(500).json({ error: "Failed to login" });
-  }
-};
-
 const getMyProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findOne({ firebaseUid: req.user.uid });
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -100,8 +65,8 @@ const updateMyProfile = async (req, res) => {
       }
     }
 
-    const user = await User.findByIdAndUpdate(
-      req.user.id,
+    const user = await User.findOneAndUpdate(
+      { firebaseUid: req.user.uid },
       { $set: updates },
       { new: true, runValidators: true }
     );
@@ -119,8 +84,8 @@ const updateMyProfile = async (req, res) => {
 
 const getMyStats = async (req, res) => {
   try {
-    const user = await User.findById(
-      req.user.id,
+    const user = await User.findOne(
+      { firebaseUid: req.user.uid },
       "stats streakFreezeCount"
     );
 
@@ -137,6 +102,7 @@ const getMyStats = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch stats" });
   }
 };
+
 
 const getPublicProfile = async (req, res) => {
   try {
@@ -155,16 +121,16 @@ const getPublicProfile = async (req, res) => {
   }
 };
 
+
 function sanitizeUser(user) {
   const obj = user.toObject();
   delete obj.__v;
-  delete obj.password;
+  delete obj.firebaseUid;
   return obj;
 }
 
 module.exports = {
   registerUser,
-  loginUser,
   getMyProfile,
   updateMyProfile,
   getMyStats,
