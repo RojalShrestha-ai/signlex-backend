@@ -19,7 +19,7 @@ const BADGE_DEFINITIONS = [
 
 const awardXP = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findOne({ firebaseUid: req.user.uid });
     if (!user) return res.status(404).json({ error: "User not found" });
 
     const { amount, reason } = req.body;
@@ -68,7 +68,7 @@ const awardXP = async (req, res) => {
 
 const getStreak = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findOne({ firebaseUid: req.user.uid });
     if (!user) return res.status(404).json({ error: "User not found" });
 
     const now = new Date();
@@ -103,7 +103,7 @@ const getStreak = async (req, res) => {
 
 const dailyCheckin = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findOne({ firebaseUid: req.user.uid });
     if (!user) return res.status(404).json({ error: "User not found" });
 
     const now = new Date();
@@ -154,7 +154,7 @@ const dailyCheckin = async (req, res) => {
 
 const useStreakFreeze = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findOne({ firebaseUid: req.user.uid });
     if (!user) return res.status(404).json({ error: "User not found" });
 
     if (user.streakFreezeCount <= 0) {
@@ -179,7 +179,7 @@ const useStreakFreeze = async (req, res) => {
 
 const getAchievements = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findOne({ firebaseUid: req.user.uid });
     if (!user) return res.status(404).json({ error: "User not found" });
 
     const achievements = await Achievement.find({ userId: user._id }).sort({
@@ -199,7 +199,7 @@ const getAchievements = async (req, res) => {
 
 const getAvailableBadges = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findOne({ firebaseUid: req.user.uid });
     if (!user) return res.status(404).json({ error: "User not found" });
 
     const unlocked = await Achievement.find({ userId: user._id });
@@ -221,7 +221,7 @@ const getAvailableBadges = async (req, res) => {
 
 const getLevelInfo = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findOne({ firebaseUid: req.user.uid });
     if (!user) return res.status(404).json({ error: "User not found" });
 
     const currentLevel = user.stats.currentLevel;
