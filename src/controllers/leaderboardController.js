@@ -77,7 +77,7 @@ const getMonthlyRankings = async (req, res) => {
 
 const getMyRank = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findOne({ firebaseUid: req.user.uid });
     if (!user) return res.status(404).json({ error: "User not found" });
 
     const myEntry = await Leaderboard.findOne({ userId: user._id });
