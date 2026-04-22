@@ -5,7 +5,7 @@ const Progress = require("../models/Progress");
 
 const getWeeklySummary = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findOne({ firebaseUid: req.user.uid });
     if (!user) return res.status(404).json({ error: "User not found" });
 
     const sevenDaysAgo = new Date();
@@ -81,7 +81,7 @@ const getWeeklySummary = async (req, res) => {
 
 const getSignBreakdown = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findOne({ firebaseUid: req.user.uid });
     if (!user) return res.status(404).json({ error: "User not found" });
 
     const breakdown = await Progress.aggregate([
@@ -119,7 +119,7 @@ const getSignBreakdown = async (req, res) => {
 
 const getLearningTrend = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findOne({ firebaseUid: req.user.uid });
     if (!user) return res.status(404).json({ error: "User not found" });
 
     const days = parseInt(req.query.days) || 30;
